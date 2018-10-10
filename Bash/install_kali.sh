@@ -28,9 +28,9 @@ sudo rm /etc/alternatives/nc && sudo ln -s /bin/nc.traditional /etc/alternatives
 ## Adiciona o Alias para tail
 echo "Criando alias para tailf"
 if [ "$(id -u)" != "0" ]; then
-    alias tailf="tail -f" >> ~/.bashrc
+    echo 'alias tailf="tail -f"' >> ~/.bashrc
 fi
-alias tailf="tail -f" >> /root/.bashrc
+echo 'alias tailf="tail -f"' >> /root/.bashrc
 
 ##########################################
 ## Habilita serviço de SSH
