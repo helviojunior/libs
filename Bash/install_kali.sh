@@ -28,20 +28,28 @@ sudo rm /etc/alternatives/nc && sudo ln -s /bin/nc.traditional /etc/alternatives
 ## Adiciona o Alias para tail
 echo "Criando alias para tailf"
 if [ "$(id -u)" != "0" ]; then
-    echo 'alias tailf="tail -f"' >> ~/.bashrc
+    if [ "$(grep 'alias tailf' ~/.bashrc | wc -l)" == "0" ]; then
+        echo 'alias tailf="tail -f"' >> ~/.bashrc
+    fi
 fi
-echo 'alias tailf="tail -f"' >> /root/.bashrc
+if [ "$(sudo grep 'alias tailf' /root/.bashrc | wc -l)" == "0" ]; then
+    sudo echo 'alias tailf="tail -f"' >> /root/.bashrc
+fi
 
 ##########################################
 ## Habilita serviço de SSH
-systemctl enable ssh.service
+sudo systemctl enable ssh.service
 
 ##########################################
 ## Instala o peda no GDB
 if [ "$(id -u)" != "0" ]; then
-    git clone https://github.com/longld/peda.git ~/peda
-    echo "source ~/peda/peda.py" >> ~/.gdbinit
+    if [ "$(grep 'peda.py' ~/.gdbinit | wc -l)" == "0" ]; then
+        git clone https://github.com/longld/peda.git ~/peda
+        echo "source ~/peda/peda.py" >> ~/.gdbinit
+    fi
 fi
-git clone https://github.com/longld/peda.git /root/peda
-echo "source /root/peda/peda.py" >> /root/.gdbinit
+if [ "$(sudo grep 'peda.py' /root/.gdbinit | wc -l)" == "0" ]; then
+    sudo git clone https://github.com/longld/peda.git /root/peda
+    sudo echo "source /root/peda/peda.py" >> /root/.gdbinit
+fi
 
