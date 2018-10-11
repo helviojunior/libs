@@ -24,8 +24,10 @@ apt-get install -y libc6 gcc g++ pip pip3 clinfo pkg-config g++-multilib libc6-d
 
 # Outras ferramentas
 apt-get install -y hashcat-utils hashcat deepin-screenshot keepassx netcat-traditional
-pip install pwntools
-pip install libformatstr
+pip install --upgrade pip
+pip install --upgrade pwntools
+pip install --upgrade libformatstr
+pip install --upgrade ropper
 
 # Atualiza o sistema para usar no NC tradicional ao invés do que vem no Kali
 rm /etc/alternatives/nc && ln -s /bin/nc.traditional /etc/alternatives/nc
