@@ -28,6 +28,7 @@ pip install --upgrade pip
 pip install --upgrade pwntools
 pip install --upgrade libformatstr
 pip install --upgrade ropper
+pip install --upgrade ropgadget
 
 # Atualiza o sistema para usar no NC tradicional ao invés do que vem no Kali
 rm /etc/alternatives/nc && ln -s /bin/nc.traditional /etc/alternatives/nc
