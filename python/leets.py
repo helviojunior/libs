@@ -4,7 +4,7 @@
 '''
 Author : Helvio Junior (M4v3r1cK)
 Date : 2018-10-23
-https://github.com/helviojunior/exploits/blob/master/libs/pythin/leets.py
+https://github.com/helviojunior/libs/blob/master/python/leets.py
 '''
 
 import os, re, sys, getopt, argparse
