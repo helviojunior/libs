@@ -63,7 +63,6 @@ d = {
 	"8":"8",
 	"9":"9"
 	}
-wl = []
 u = []
 prt = True
 
@@ -73,26 +72,23 @@ def calc_uniq():
 			if s not in u:
 				u.append(s)
 
-def print_word(w):
-	if len(w) <= max_size:
-		if w is not None and w not in wl:
-			wl.append(w)
-			if prt:
-				print w
-
 def proc2(word, index):
 	c = word[index:index+1]
 	if c in d:
 		for i, s in enumerate(d.get(c)):
-			print_word("%s%s%s" % (word[0:index], s, word[index+1:]))
+			if (index == len(word) - 1):
+				p = "%s%s" % (word[0:index], s)
+				if len(p) < min_size and padding:
+					add_padding(p)
+				else:
+					print p
+			else:
+				p = "%s%s%s" % (word[0:index], s, word[index+1:])
+				proc2(p, index+1)
 
 def process(l):
-	print_word(l)
-	for i, c in enumerate(l):
-		proc2(l, i)
-	for li in wl:
-		for i, c in enumerate(li):
-			proc2(li, i)
+	print l
+	proc2(l,0)
 
 def create_wl(l,d):
   if d<1:
@@ -104,13 +100,12 @@ def create_wl(l,d):
       for k in create_wl(l,d-1):
         yield c+k
 
-def add_padding(s):
-	s1 = min_size - s
-	if s > 0:
+def add_padding(word):
+	s1 = min_size - len(word)
+	if s1 > 0:
 		for c in create_wl(u,s1):
-			for li in wl:
-				print "%s%s" % (li, c)
-				print "%s%s" % (c, li)
+			print "%s%s" % (word, c)
+			print "%s%s" % (c, word)
 
 def main():
 	if not os.path.isfile(args.wordlist_file):
@@ -126,13 +121,8 @@ def main():
 				if len(l1) > max_size:
 					pass
 				elif len(l1) < min_size and padding:
-					wl = [] # limpa a lista
-					prt = False
 					process(l1.lower())
-					add_padding(len(l1))
 				elif len(l1) >= min_size:
-					wl = [] # limpa a lista
-					prt = True
 					process(l1.lower())
 		except KeyboardInterrupt:
 			sys.stdout.flush()
