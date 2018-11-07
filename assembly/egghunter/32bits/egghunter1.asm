@@ -1,9 +1,10 @@
 [BITS 32]
 
 ; EggHunter usando a função NtAccessCheckAndAuditAlarm
+; Autor: Helvio Junior (M4v3r1cK)
 ;
 ; Procedimento de compilação do EggHunter
-; nasm egghunter_v5.asm -o egghunter -l egghunter.lst
+; nasm egghunter1.asm -o egghunter -l egghunter.lst
 ; cat egghunter | msfvenom -p - -a x86 --platform win -e generic/none -f python
 ;
 ; 34 bytes egghunter
