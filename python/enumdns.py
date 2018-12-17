@@ -3,7 +3,7 @@
 
 import socket
 import sys
-import os, re, sys, queue, time, datetime, threading
+import os, re, sys, queue, time, datetime, threading, json
 
 class Logger(object):
     ''' Helper object for easily printing colored text to the terminal. '''
@@ -236,12 +236,31 @@ class DNSGetter:
     words = []
     q = queue.Queue()
     added = []
+    last = {}
+    last_start = []
+    ingnored =0
+
 
     def __init__(self):
         pass
 
     def load_wordlist(self):
         self.words = []
+        insert = True
+        
+        if os.path.isfile("enumdns.restore"):
+            try:
+                with open("enumdns.restore", 'r') as f:
+                    dt = json.load(f)
+                    for i in dt["threads"]:
+                        self.last_start.append(dt["threads"][i].replace(".%s" % Configuration.domain, ""))
+
+            except Exception as e:
+                raise   
+
+        if len(self.last_start) > 0:
+            insert = False
+
         with open(Configuration.word_list, 'r', encoding="ascii", errors="surrogateescape") as f:
             try:
                 line = f.readline()
@@ -255,7 +274,13 @@ class DNSGetter:
 
                     line = ''.join(filter(self.permited_char, line))
 
-                    self.words.append(line.strip())
+                    if not insert and line in self.last_start:
+                        insert = True                        
+
+                    if insert:
+                        self.words.append(line.strip())
+                    else:
+                        self.ingnored += 1
 
                     try:
                         line = f.readline()
@@ -284,7 +309,7 @@ class DNSGetter:
 
     def run(self):
 
-        t = threading.Thread(target=self.worker)
+        t = threading.Thread(target=self.worker, kwargs=dict(index=-1))
         t.daemon = True
         t.start()
 
@@ -293,8 +318,13 @@ class DNSGetter:
 
         self.do_work(Configuration.domain)
 
+        t_status = threading.Thread(target=self.status_worker)
+        t_status.daemon = True
+        t_status.start()
+
         for i in range(Configuration.tasks):
-            t = threading.Thread(target=self.worker)
+            self.last[i] = ''
+            t = threading.Thread(target=self.worker, kwargs=dict(index=i))
             t.daemon = True
             t.start()
 
@@ -305,11 +335,26 @@ class DNSGetter:
         self.q.join()  # block until all tasks are done
         sys.stdout.write("\033[K")  # Clear to the end of line
 
+    def status_worker(self):
+        try:
+            while True:
+                try:
+                    dt = { "threads": self.last }
 
-    def worker(self):
+                    with open("enumdns.restore", "w") as text_file:
+                        text_file.write(json.dumps(dt))
+                except:
+                    raise
+                time.sleep(10)
+        except KeyboardInterrupt:
+            pass
+
+    def worker(self, index):
         try:
             while True:
                 item = self.q.get()
+                if index >= 0:
+                    self.last[index] = item
                 self.do_work(item)
                 self.q.task_done()
         except KeyboardInterrupt:
@@ -353,6 +398,7 @@ class EnumDNS(object):
             timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             Logger.pl('     {C}start time {O}%s{W}' % timestamp)
             Logger.pl('     {C}generated {O}%d{C} words{W}' % get.len())
+            Logger.pl('     {C}ignored {O}%d{C} words{W}' % get.ingnored)
             Logger.pl(' ')
 
             Logger.pl('{+} {W}Scanning hosts on DNS sufix {C}%s{W} ' % Configuration.domain)
