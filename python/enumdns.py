@@ -242,22 +242,44 @@ class DNSGetter:
 
     def load_wordlist(self):
         self.words = []
-        with open(Configuration.word_list, 'r') as f:
-            line = f.readline()
-            line = line.lower()
-            while line:
-                if line.endswith('\n'):
-                    line = line[:-1]
-                if line.endswith('\r'):
-                    line = line[:-1]
-                self.words.append(line.strip())
-                try:
-                    line = f.readline()
-                except:
-                    pass
+        with open(Configuration.word_list, 'r', encoding="ascii", errors="surrogateescape") as f:
+            try:
+                line = f.readline()
+                line = line.lower()
+
+                while line:
+                    if line.endswith('\n'):
+                        line = line[:-1]
+                    if line.endswith('\r'):
+                        line = line[:-1]
+
+                    line = ''.join(filter(self.permited_char, line))
+
+                    self.words.append(line.strip())
+
+                    try:
+                        line = f.readline()
+                    except:
+                        pass
+            except KeyboardInterrupt:
+                raise
+            except:
+                raise
 
     def len(self):
         return len(self.words)
+
+
+    def permited_char(self, s):
+        if s.isalpha():
+            return True
+        elif bool(re.match("^[A-Za-z0-9_-]*$", s)):
+            return True
+        elif s == ".":
+            return True
+        else:
+            return False
+
 
 
     def run(self):
