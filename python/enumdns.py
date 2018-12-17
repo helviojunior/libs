@@ -42,29 +42,37 @@ class Configuration(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('-d',
+        requiredNamed = parser.add_argument_group('SETTINGS')
+
+        requiredNamed.add_argument('-d',
             action='store',
             dest='dns_sufix',
             metavar='[dns sufix]',
             type=str,
-            help=Color.s('Sufix to DNS check'))
+            required=True,
+            help=Color.s('Sufix to DNS check (ex: {G}helviojunior.com.br{W})'))
 
-        parser.add_argument('-w',
+        requiredNamed.add_argument('-w',
             action='store',
             dest='word_list',
             metavar='[word list]',
             type=str,
+            default='',
+            required=True,
             help='Word list to be tested')
 
-        parser.add_argument('-t',
+        customNamed = parser.add_argument_group('CUSTOM')
+
+
+        customNamed.add_argument('-t',
             action='store',
             dest='tasks',
             default=5,
             metavar='[tasks]',
             type=int,
-            help='Number of threads in parallel (default: 5)')
+            help=Color.s('Number of threads in parallel (default: {G}5{W})'))
 
-        parser.add_argument('-o',
+        customNamed.add_argument('-o',
             action='store',
             dest='out_file',
             metavar='[output file]',
@@ -92,6 +100,13 @@ class Configuration(object):
             Configuration.out_file = args.out_file
             Logger.out_file = Configuration.out_file
 
+        config_check = 0
+        if Configuration.word_list == '':
+            config_check = 1
+
+        if config_check == 1:
+            Configuration.mandatory()
+
 
         Logger.pl(Configuration.cmd_line, False)
         Logger.pl(' ', False)
@@ -99,6 +114,10 @@ class Configuration(object):
 
         Logger.pl('{+} {W}Startup parameters')
 
+
+        if not os.path.isfile(Configuration.word_list):
+            Color.pl('{!} {R}error: word list file not found {O}%s{R}{W}\r\n' % Configuration.word_list)
+            Configuration.exit_gracefully(0)
 
         try:
             with open(Configuration.word_list, 'r') as f:
@@ -118,6 +137,11 @@ class Configuration(object):
         Logger.pl('     {C}word list:{O} %s{W}' % Configuration.word_list)
         Logger.pl('     {C}dns sufix:{O} %s{W}' % Configuration.domain)
         Logger.pl('     {C}tasks:{O} %s{W}' % Configuration.tasks)
+
+    @staticmethod
+    def mandatory():
+        Color.pl('{!} {R}error: missing a mandatory option ({O}-d and -w{R}){G}, use -h help{W}\r\n')
+        sys.exit(0)
 
 class Color(object):
     ''' Helper object for easily printing colored text to the terminal. '''
