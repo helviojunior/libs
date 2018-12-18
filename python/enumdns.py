@@ -345,7 +345,7 @@ class DNSGetter:
                     with open("enumdns.restore", "w") as text_file:
                         text_file.write(json.dumps(dt))
                 except:
-                    raise
+                    pass
                 time.sleep(10)
         except KeyboardInterrupt:
             pass
