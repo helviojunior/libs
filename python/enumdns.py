@@ -239,6 +239,7 @@ class DNSGetter:
     last = {}
     last_start = []
     ingnored =0
+    listed = []
 
 
     def __init__(self):
@@ -366,8 +367,11 @@ class DNSGetter:
             print(("Testing: %s" % queue_item), end='\r', flush=True)
 
             ip=socket.gethostbyname(queue_item)
+            l='%s : %s'% (queue_item, ip)
 
-            Logger.pl('{*} {W}%s : %s'% (queue_item, ip))
+            if l not in self.listed:
+                self.listed.append(l)
+                Logger.pl('{*} {W}%s'% l)
 
         except:
             pass
@@ -404,6 +408,9 @@ class EnumDNS(object):
             Logger.pl('{+} {W}Scanning hosts on DNS sufix {C}%s{W} ' % Configuration.domain)
             get.run()
             Logger.pl('     ')
+
+            if os.path.exists("enumdns.restore"): 
+                os.remove("enumdns.restore")
 
         except Exception as e:
             Color.pl("\n{!} {R}Error: {O}%s" % str(e))
