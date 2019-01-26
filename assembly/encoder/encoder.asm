@@ -3,7 +3,7 @@
 ; Encoder/decoder
 ; Autor: Helvio Junior (M4v3r1cK)
 ;
-; Procedimento de compilação do EggHunter
+; Procedimento de compilação do Encoder
 ; nasm decoder.asm -o decoder -l decoder.lst
 ; cat decoder | msfvenom -p - -a x86 --platform win -e generic/none -f hex
 ;
