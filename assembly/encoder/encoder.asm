@@ -11,7 +11,7 @@
 
 
 _start:
-    mov EAX,0x00401525        ; Salvar o endereço de início da codificação/decodificação
+    mov EAX,0x00401525      ; Salvar o endereço de início da codificação/decodificação
 
 encode:
     XOR BYTE [EAX],0x0F     ; XOR o conteúdo de EAX com a chave 0x0F
@@ -21,7 +21,7 @@ loop_inc_one:
                             ; incrementa 1 ao valor de EAX
 
 loop_check:                 ; checa o endereço atual
-    CMP    EAX,0x0040166E     ; Chegamos no endereço final da codificação?    
+    CMP    EAX,0x0040166E   ; Chegamos no endereço final da codificação?    
     JLE    encode           ; Se não, pulamos de volta para o XOR    
 
 end:                        ; Colocar aqui o JMP para o shellcode
