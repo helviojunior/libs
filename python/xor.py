@@ -24,6 +24,9 @@ if key > 255:
 
 text=args.text
 
+if text == "-":
+    text = input()
+
 text2 = ""
 
 for i in range(len(text)):
