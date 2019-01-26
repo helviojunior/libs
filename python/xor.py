@@ -21,7 +21,7 @@ parser.add_argument('key', help='xor key')
 
 args = parser.parse_args()
 
-key = int(args.key, 10)
+key = int(args.key, 0)
 if key < 0:
     key = 0
 
