@@ -8,12 +8,7 @@ https://github.com/helviojunior/libs/blob/master/python/xor.py
 '''
 
 import os, re, sys, getopt, argparse
-import sys
-
-def print_err(text):
-    sys.stderr.write(text)
-    sys.stderr.flush()
-
+import sys, struct
 
 parser = argparse.ArgumentParser()
 parser.add_argument('text', help='Text to encode with xor')
@@ -21,28 +16,38 @@ parser.add_argument('key', help='xor key')
 
 args = parser.parse_args()
 
-key = int(args.key, 0)
-if key < 0:
-    key = 0
 
-if key > 255:
-    key = 255
+def print_err(text):
+    sys.stderr.write(text)
+    sys.stderr.flush()
+
+def print_std(data):
+    sys.stdout.buffer.write(data)
+    sys.stdout.flush()
+
+
+ikey = int(args.key, 0)
+if ikey < 0:
+    ikey = 0
+
+if ikey > 255:
+    ikey = 255
+
+key = (ikey).to_bytes(1, byteorder='big')[0]
 
 text=args.text
 
 if text == "-":
-    #text = input()
-    text = sys.stdin.buffer.read()
+    bdata = sys.stdin.buffer.read()
+else:
+    bdata = str.encode(text)
 
 print_err("Encoding data with key 0x%02x\n" % key)
-print_err("Input size: %d\n" % len(text))
+print_err("Input size: %d\n" % len(bdata))
 
-text2 = ""
+odata = bytearray()
 
-for i in range(len(text)):
-    if isinstance(text[i], int):
-        text2 += chr(text[i] ^ key)
-    else:
-        text2 += chr(ord(text[i]) ^ key)
+for i in bdata:
+    odata.append( i ^ key )
 
-print(text2, end='', flush=True)
+print_std(odata)
