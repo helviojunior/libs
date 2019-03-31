@@ -1,7 +1,8 @@
 [BITS 32]
 
 ; Encoder/decoder
-; Autor: Helvio Junior (M4v3r1cK)
+; Eggunter baseado no do autor: skape mmiller[at]hick.org 
+; Ajustes e emcoder por: Helvio Junior (M4v3r1cK)
 ;
 ; Procedimento de compilação do EggHunter
 ; nasm decoder.asm -o decoder -l decoder.lst
