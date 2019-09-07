@@ -11,7 +11,7 @@
 ; 34 bytes egghunter
 
 _start:
-    ;mov edx,0x02021717     ; Caso desejado descomente/habilite essa linha
+    xor edx,edx             ; Zera o EDX
                             ; para que seja definido manualmente o endereço inicial da busca
     jmp loop_check          ; salta para a checagem
 
