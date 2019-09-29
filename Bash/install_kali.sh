@@ -51,6 +51,7 @@ systemctl enable ssh.service
 if [ "$(grep 'peda.py' /root/.gdbinit 2>/dev/null | wc -l)" -eq "0" ]; then
     git clone https://github.com/longld/peda.git /opt/peda
     echo "source /opt/peda/peda.py" >> /root/.gdbinit
+    echo "set follow-fork-mode parent" >> /root/.gdbinit
 fi
 
 
@@ -73,6 +74,7 @@ for u in $(getent passwd | cut -d: -f1); do
         ## Instala o peda no GDB
         if [ "$(grep 'peda.py' /home/$u/.gdbinit 2>/dev/null | wc -l)" -eq "0" ]; then
             echo "source /opt/peda/peda.py" >> /home/$u/.gdbinit
+	    echo "set follow-fork-mode parent" >> /home/$u/.gdbinit
         fi
         
     fi
