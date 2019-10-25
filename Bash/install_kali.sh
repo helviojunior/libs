@@ -20,7 +20,7 @@ apt-get update && apt-get upgrade
 apt-get install -y linux-headers-$(uname -r)
 
 # Pacotes de desenvolvimento
-apt-get install -y libc6 gcc g++ pip pip3 clinfo pkg-config g++-multilib libc6-dev-i386 autoconf openssl libssl-dev pwntools python python3 gcc-6-multilib gcc-multilib
+apt-get install -y libc6 gcc g++ pip pip3 clinfo pkg-config g++-multilib libc6-dev-i386 mingw-w64 autoconf openssl libssl-dev pwntools python python3 gcc-6-multilib gcc-multilib
 
 # Outras ferramentas
 apt-get install -y hashcat-utils hashcat deepin-screenshot keepassx netcat-traditional
