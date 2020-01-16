@@ -1,6 +1,6 @@
 [BITS 64]
 
-; Código assembly para resgatar o EIP atual
+; Código assembly para resgatar o RIP atual
 ; Autor: Helvio Junior (M4v3r1cK)
 ;
 ; Procedimento de compilação
