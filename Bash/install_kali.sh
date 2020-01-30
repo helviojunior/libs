@@ -49,8 +49,10 @@ systemctl enable ssh.service
 ##########################################
 ## Instala o peda no GDB
 if [ "$(grep 'peda.py' /root/.gdbinit 2>/dev/null | wc -l)" -eq "0" ]; then
-    git clone https://github.com/longld/peda.git /opt/peda
-    echo "source /opt/peda/peda.py" >> /root/.gdbinit
+    #git clone https://github.com/longld/peda.git /opt/peda
+    #echo "source /opt/peda/peda.py" >> /root/.gdbinit
+    wget -O /root/.gdbinit-gef.py -q https://github.com/hugsy/gef/raw/master/gef.py
+    echo "source /root/.gdbinit-gef.py" >> /root/.gdbinit
     echo "set follow-fork-mode parent" >> /root/.gdbinit
 fi
 
@@ -73,7 +75,9 @@ for u in $(getent passwd | cut -d: -f1); do
         ##########################################
         ## Instala o peda no GDB
         if [ "$(grep 'peda.py' /home/$u/.gdbinit 2>/dev/null | wc -l)" -eq "0" ]; then
-            echo "source /opt/peda/peda.py" >> /home/$u/.gdbinit
+            #echo "source /opt/peda/peda.py" >> /home/$u/.gdbinit
+	    wget -O /home/$u/.gdbinit-gef.py -q https://github.com/hugsy/gef/raw/master/gef.py
+	    echo "source /home/$u/.gdbinit-gef.py" >> /home/$u/.gdbinit
 	    echo "set follow-fork-mode parent" >> /home/$u/.gdbinit
         fi
         
