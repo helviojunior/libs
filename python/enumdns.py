@@ -275,7 +275,7 @@ class DNSGetter:
 
                     line = ''.join(filter(self.permited_char, line))
 
-                    if not insert and line in self.last_start:
+                    if not insert and line in self.last_start and line not in self.words:
                         insert = True                        
 
                     if insert:
