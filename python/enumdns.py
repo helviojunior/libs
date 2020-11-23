@@ -265,9 +265,12 @@ class DNSGetter:
         with open(Configuration.word_list, 'r', encoding="ascii", errors="surrogateescape") as f:
             try:
                 line = f.readline()
-                line = line.lower()
-
+                
                 while line:
+                    insert = False
+                    
+                    line = line.lower()
+
                     if line.endswith('\n'):
                         line = line[:-1]
                     if line.endswith('\r'):
