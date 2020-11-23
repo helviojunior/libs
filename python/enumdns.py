@@ -238,7 +238,8 @@ class DNSGetter:
     added = []
     last = {}
     last_start = []
-    ingnored =0
+    ignored =0
+    duplicated =0
     listed = []
 
 
@@ -267,8 +268,7 @@ class DNSGetter:
                 line = f.readline()
                 
                 while line:
-                    insert = False
-                    
+
                     line = line.lower()
 
                     if line.endswith('\n'):
@@ -278,13 +278,16 @@ class DNSGetter:
 
                     line = ''.join(filter(self.permited_char, line))
 
-                    if not insert and line in self.last_start and line not in self.words:
+                    if not insert and line in self.last_start:
                         insert = True                        
 
                     if insert:
-                        self.words.append(line.strip())
+                        if line not in self.words:
+                            self.words.append(line.strip())
+                        else:
+                            self.duplicated += 1
                     else:
-                        self.ingnored += 1
+                        self.ignored += 1
 
                     try:
                         line = f.readline()
@@ -405,7 +408,8 @@ class EnumDNS(object):
             timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             Logger.pl('     {C}start time {O}%s{W}' % timestamp)
             Logger.pl('     {C}generated {O}%d{C} words{W}' % get.len())
-            Logger.pl('     {C}ignored {O}%d{C} words{W}' % get.ingnored)
+            Logger.pl('     {C}ignored {O}%d{C} words{W}' % get.ignored)
+            Logger.pl('     {C}duplicated {O}%d{C} words{W}' % get.duplicated)
             Logger.pl(' ')
 
             Logger.pl('{+} {W}Scanning hosts on DNS sufix {C}%s{W} ' % Configuration.domain)
