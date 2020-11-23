@@ -282,10 +282,7 @@ class DNSGetter:
                         insert = True                        
 
                     if insert:
-                        if line not in self.words:
-                            self.words.append(line.strip())
-                        else:
-                            self.duplicated += 1
+                        self.words.append(line.strip())
                     else:
                         self.ignored += 1
 
@@ -297,6 +294,11 @@ class DNSGetter:
                 raise
             except:
                 raise
+
+        if len(self.words) > 0:
+            ltmp = len(self.words)
+            self.words = list(set(self.words))
+            self.duplicated = ltmp - len(self.words)
 
     def len(self):
         return len(self.words)
