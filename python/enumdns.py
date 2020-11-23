@@ -297,7 +297,9 @@ class DNSGetter:
 
         if len(self.words) > 0:
             ltmp = len(self.words)
-            self.words = list(set(self.words))
+            used = set()
+            unique = [x for x in self.words if x not in used and (used.add(x) or True)]
+            self.words = unique
             self.duplicated = ltmp - len(self.words)
 
     def len(self):
