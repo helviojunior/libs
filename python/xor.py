@@ -14,7 +14,7 @@ import sys, struct
 parser = argparse.ArgumentParser()
 parser.add_argument('-text', help='Text to encode with xor')
 parser.add_argument('-key', help='xor key')
-parser.add_argument('-f', '--format', default='raw', help='Format to output (c, csharp, python)')
+parser.add_argument('-f', '--format', default='raw', help='Format to output (raw, c, csharp, python)')
 parser.add_argument('-v', '--variable', default='buffer', help='Buffer variable Name')
 
 args = parser.parse_args()
