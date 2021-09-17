@@ -43,7 +43,7 @@ def print_output(data):
 
                 txtdata += "\\x{0:02x}".format(val)
 
-            txtdata += "\"\n"
+            txtdata += "\";\n"
             print(txtdata)
 
         elif fmt == "csharp":
