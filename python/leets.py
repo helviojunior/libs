@@ -1,133 +1,104 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
- 
+
 '''
 Author : Helvio Junior (M4v3r1cK)
-Date : 2018-10-23
-https://github.com/helviojunior/libs/blob/master/python/leets.py
+Date : 2019-01-15
+Updated: 2021-09-17
+https://github.com/helviojunior/libs/blob/master/python/xor.py
 '''
 
 import os, re, sys, getopt, argparse
+import sys, struct
 
 parser = argparse.ArgumentParser()
-parser.add_argument('wordlist_file', help='Input file with word list to leet')
-parser.add_argument('-min', '--min-lenght', default=1, type=int, help='Minumin word lenght')
-parser.add_argument('-max', '--max-lenght', default=32, type=int, help='Maximum word lenght.')
-parser.add_argument('-p', '--padding', action='store_true', default=False, help='Add padding to fill string to match minimun leght')
-#parser.add_argument('-h', '--help', help='Show this help message and exit')
+parser.add_argument('text', help='Text to encode with xor')
+parser.add_argument('key', help='xor key')
+parser.add_argument('-f', '--format', default='raw', help='Format to output (c, csharp, python)')
+parser.add_argument('-v', '--variable', default='buffer', help='Buffer variable Name')
+
 args = parser.parse_args()
 
-min_size = int(args.min_lenght)
-max_size = int(args.max_lenght)
-padding = args.padding
 
-if min_size < 1:
-	min_size = 1
+def print_err(text):
+    sys.stderr.write(text)
+    sys.stderr.flush()
 
+def print_std(data):
+    sys.stdout.buffer.write(data)
+    sys.stdout.flush()
 
-d = {	
-	"a":"aA@49",
-	"b":"bB8",
-	"c":"cC",
-	"d":"dD",
-	"e":"eE3",
-	"f":"fF",
-	"g":"gG96",
-	"h":"hH#",
-	"i":"iI!1",
-	"j":"jJ",
-	"k":"kK",
-	"l":"lL!1",
-	"m":"mM",
-	"n":"nN",
-	"o":"oO0",
-	"p":"pP",
-	"q":"qQ",
-	"r":"rR",
-	"s":"sS5$",
-	"t":"tT7+",
-	"u":"uU",
-	"v":"vV",
-	"w":"wW",
-	"x":"xX",
-	"y":"yY",
-	"z":"zZ2",
-	"0":"0",
-	"1":"1",
-	"2":"2",
-	"3":"3",
-	"4":"4",
-	"5":"5",
-	"6":"6",
-	"7":"7",
-	"8":"8",
-	"9":"9"
-	}
-u = []
-prt = True
+def print_output(data):
 
-def calc_uniq():
-	for c in d:
-		for i, s in enumerate(d.get(c)):
-			if s not in u:
-				u.append(s)
+    fmt = args.format
+    if fmt != "raw":
+        var_name = args.variable
 
-def proc2(word, index):
-	c = word[index:index+1]
-	if c in d:
-		for i, s in enumerate(d.get(c)):
-			if (index == len(word) - 1):
-				p = "%s%s" % (word[0:index], s)
-				if len(p) < min_size and padding:
-					add_padding(p)
-				else:
-					print p
-			else:
-				p = "%s%s%s" % (word[0:index], s, word[index+1:])
-				proc2(p, index+1)
+        if fmt == "c":
+            txtdata = "unsigned char %s[] =" % var_name
+            txtdata += "\n\""
+            for idx, val in enumerate(data):
 
-def process(l):
-	print l
-	proc2(l,0)
+                if idx != 0 and idx % 16 == 0:
+                    txtdata += "\"\n\""
 
-def create_wl(l,d):
-  if d<1:
-    return
-  for c in l:
-    if d==1:
-      yield c
-    else:
-      for k in create_wl(l,d-1):
-        yield c+k
+                txtdata += "\\x{0:02x}".format(val)
 
-def add_padding(word):
-	s1 = min_size - len(word)
-	if s1 > 0:
-		for c in create_wl(u,s1):
-			print "%s%s" % (word, c)
-			print "%s%s" % (c, word)
+            txtdata += "\"\n"
+            print(txtdata)
 
-def main():
-	if not os.path.isfile(args.wordlist_file):
-		print "Wordlist file not found '%s'" % args.wordlist_file
-		sys	.exit(1)
+        elif fmt == "csharp":
+            txtdata = "byte[] %s = new byte[%d] {" % (var_name, len(data))
+            for idx, val in enumerate(data):
 
-	calc_uniq()
-	with open(args.wordlist_file) as f:
-		try:
-			global prt
-			for line in f:
-				l1 = line.rstrip().lstrip()
-				if len(l1) > max_size:
-					pass
-				elif len(l1) < min_size and padding:
-					process(l1.lower())
-				elif len(l1) >= min_size:
-					process(l1.lower())
-		except KeyboardInterrupt:
-			sys.stdout.flush()
-			sys	.exit(0)
+                if idx % 16 == 0:
+                    txtdata += "\n"
+
+                txtdata += "0x{0:02x},".format(val)
+
+            txtdata = txtdata.strip(",")
+            txtdata += " };\n"
+            print(txtdata)
+
+        elif fmt == "python":
+            txtdata = "%s =  b\"\"\n" % var_name
+            for idx, val in enumerate(data):
+
+                if idx % 16 == 0:
+                    txtdata += "%s += b\"" % var_name
+
+                txtdata += "\\x{0:02x}".format(val)
+
+            txtdata = txtdata.strip(",")
+            txtdata += "\"\n"
+            print(txtdata)
+
+    else: # raw
+        print_std(data)
 
 
-if __name__ == "__main__":
-	main()	
+ikey = int(args.key, 0)
+if ikey < 0:
+    ikey = 0
+
+if ikey > 255:
+    ikey = 255
+
+key = (ikey).to_bytes(1, byteorder='big')[0]
+
+text=args.text
+
+if text == "-":
+    bdata = sys.stdin.buffer.read()
+else:
+    bdata = str.encode(text)
+
+print_err("Encoding data with key 0x%02x\n" % key)
+print_err("Input size: %d\n" % len(bdata))
+
+odata = bytearray()
+
+for i in bdata:
+    odata.append( i ^ key )
+
+print_output(odata)
