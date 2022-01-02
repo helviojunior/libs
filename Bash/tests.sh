@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd /tmp
-apt install python3-distutils
+apt install -y curl git python3-distutils
 curl -s https://bootstrap.pypa.io/get-pip.py | python3.8 -
 git clone https://github.com/SecureAuthCorp/impacket.git
 cd /tmp/impacket
