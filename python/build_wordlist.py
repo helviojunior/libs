@@ -138,7 +138,7 @@ def add_common(word):
                 print("%s%02d%s" % (s, n, word))
 
     if min_size <= len(word) + 5 <= max_size:
-        for n in range(year - 5, year + 15):
+        for n in range(year - 15, year + 15):
             print("%s%s" % (word, n))
             print("%s%s" % (n, word))
             for s in special:
