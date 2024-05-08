@@ -1,0 +1,16 @@
+//Yara Rule
+import "pe"
+
+rule PE32Bits {
+    meta:
+      author = "Helvio Junior (M4v3r1ck)"
+      description = "PE 32 Bits"
+    condition:
+      // MZ signature at offset 0 and ...
+      uint16(0) == 0x5A4D and
+      // ... PE signature at offset stored in MZ header at 0x3C
+      uint32(uint32(0x3C)) == 0x00004550 and
+      // ... Magic signature (0x010B == 32 bits)
+	  uint16(uint32(0x3C) + 0x18) == 0x010B
+      
+}
